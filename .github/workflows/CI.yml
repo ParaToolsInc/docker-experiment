@@ -15,6 +15,24 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       -
+        name: Docker meta
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          # list of Docker images to use as base name for tags
+          images: |
+            paratools/docker-experiment
+          # generate Docker tags based on the following events/attributes
+          tags: |
+            type=raw,value=latest,enable={{is_default_branch}}
+            type=ref,event=branch
+            type=ref,event=pr
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+            type=semver,pattern={{major}}
+            type=sha
+            type=schedule
+      -
         name: Checkout
         uses: actions/checkout@v4
         with:
@@ -37,6 +55,6 @@ jobs:
           pull: true
           build-args: CI=true
           push: ${{ github.event_name != 'pull_request' }}
-          tags: paratools/docker-experiment:latest
+          tags: ${{ steps.meta.outputs.tags }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
