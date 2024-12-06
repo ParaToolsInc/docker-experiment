@@ -14,9 +14,10 @@ RUN <<EOC
 EOC
 
 ENV CCACHE_DIR=/ccache
+RUN --mount=type=cache,target=/ccache/ ls -l $CCACHE_DIR
 
 # Install compiler, cmake, git, ccache etc.
-RUN <<EOC
+RUN --mount=type=cache,target=/var/cache/apt,sharing=locked --mount=type=cache,target=/var/lib/apt,sharing=locked <<EOC
   apt-get update
   apt-get install -y --no-install-recommends ca-certificates \
     build-essential cmake ccache make python3 zlib1g wget unzip git
