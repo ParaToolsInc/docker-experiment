@@ -1,5 +1,12 @@
 name: ci
 
+permissions:
+  contents: read
+  packages: write
+
+env:
+  DOCKER_BUILDKIT: 1
+
 on:
   push:
 
